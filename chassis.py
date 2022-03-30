@@ -68,7 +68,7 @@ class Chassis:
         self.right.set_speed(ySpeed + rSpeed)
 
     def cruiseMain(self):
-        if self.oi.setCruiseControlButton():
+        if self.oi.setCruiseControlButtonPressed():
             self.cruising = True
             self.cruise_speed = self.get_speed()
         elif self.oi.exitCruiseControlButton():
