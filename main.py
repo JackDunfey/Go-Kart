@@ -43,7 +43,7 @@ class Robot:
             cv2.putText(frame, text, (0, y), Robot.font, 1, (255, 255, 255), 1, cv2.LINE_AA)
         
         # Speedometer
-        speed_str = str(int(self.chassis.get_speed() + 0.5)) + " MPH"
+        speed_str = str(int(self.chassis.get_speed_mph() + 0.5)) + " MPH"
         w, h = cv2.getTextSize(text, Robot.font, 1, 1)
         cv2.putText(frame, text, ((WIDTH-w)//2, (HEIGHT+h)//2), Robot.font, 5, (255, 255, 255), 5, cv2.LINE_AA)
 

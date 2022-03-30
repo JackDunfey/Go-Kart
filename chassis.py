@@ -32,7 +32,7 @@ class Chassis:
         self.falcon5.set(control_mode, speed)
         self.falcon6.set(control_mode, speed)
 
-    def get_speed(self):
+    def get_speed_mph(self):
         return ((self.falcon1.getSelectedSensorVelocity() * 10 / 2048 * 60) * 8 / 1056) + \
             ((self.falcon2.getSelectedSensorVelocity() * 10 / 2048 * 60) * 8 / 1056) + \
             ((self.falcon3.getSelectedSensorVelocity() * 10 / 2048 * 60) * 8 / 1056) + \
