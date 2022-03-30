@@ -25,5 +25,4 @@ if __name__ == "__main__":
         robot = Robot()
         robot.main()
     except KeyboardInterrupt:
-        print("Exiting cuz of keyboard interrupt")
-        exit(69420)
+        exit(0)
