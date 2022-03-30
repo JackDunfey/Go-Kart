@@ -43,7 +43,7 @@ class Chassis:
             ((self.falcon5.getSelectedSensorVelocity() * 10 / 2048 * 60) * 8 / 1056) + \
             ((self.falcon6.getSelectedSensorVelocity() * 10 / 2048 * 60) * 8 / 1056) / 6
 
-    def __init__(self, operator_interface, cruising=True, safe_mode=True, parking=False):
+    def __init__(self, operator_interface, cruising=False, safe_mode=True, parking=True):
         self.oi = operator_interface
 
         self.falcon1 = TalonFX(Wiring.TALON1)

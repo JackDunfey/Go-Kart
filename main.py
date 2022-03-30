@@ -36,7 +36,7 @@ class Robot:
         frame = np.zeros(shape=(Robot.HEIGHT, Robot.WIDTH, 3))
 
         # Display text
-        texts = [f"Parking Brake: {self.chassis.parking}"]
+        texts = []
         y = 0
         for text in texts:
             (w, h), _ = cv2.getTextSize(text, Robot.font, 1, 1)
@@ -44,7 +44,7 @@ class Robot:
             cv2.putText(frame, text, (Robot.TEXT_PADDING, y), Robot.font, 1, (255, 255, 255), 1, cv2.LINE_AA)
         
         # Speedometer
-        HEADING_SIZE = 5
+        HEADING_SIZE = 6
         speed_str = str(int(self.chassis.get_speed_mph())) + " MPH"
         (w, h), _ = cv2.getTextSize(speed_str, Robot.font, HEADING_SIZE, HEADING_SIZE)
         color = (255, 255, 255)
