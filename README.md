@@ -7,3 +7,4 @@
 * Cruise control
 * Parking brake
 * Dashboard with speedometer
+* Headlights
