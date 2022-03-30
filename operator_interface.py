@@ -41,3 +41,9 @@ class Operator_Interface:
     
     def parkingTogglePressed(self):
         return self.pilot.getLeftStickButtonPressed()
+
+    def headlightsButton(self):
+        return self.pilot.getYButton()
+
+    def headlightsButtonPresed(self):
+        return self.pilot.getYButtonPressed()
