@@ -1,4 +1,6 @@
 # My Go-Kart
+<hr>
+This is a Go-Kart controlled using a raspberry pi and an xbox controller
 
 ## Features
 
