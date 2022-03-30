@@ -1,7 +1,7 @@
 from ctre import *
 import cv2
 import numpy as np
-from wpilib import PowerDistribution, Ultrasonic
+from wpilib import PowerDistribution
 
 from operator_interface import Operator_Interface
 from chassis import Chassis
@@ -14,7 +14,6 @@ class Robot:
         self.oi = Operator_Interface()
         self.chassis = Chassis(self.oi)
         self.PDM = PowerDistribution(Wiring.PDM, PowerDistribution.ModuleType.kRev)
-        self.ultrasonic = Ultrasonic(Wiring.ULTRASONIC_1, Wiring.ULTRASONIC_2)
 
     def main(self):
         while True:
