@@ -39,6 +39,8 @@ class Chassis:
         self.falcon5 = TalonFX(Wiring.TALON5)
         self.falcon6 = TalonFX(Wiring.TALON6)
 
+        self.cruising = False
+
         self.brake = TalonSRX(Wiring.BRAKE)
         self.brake.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0)
 
@@ -50,6 +52,12 @@ class Chassis:
     def disengageBrake(self):
         self.braking = False
 
+    def cruiseMain(self):
+        if self.oi.setCruiseControlButton():
+            self.cruising = True
+            self.cruise_speed = self.get_speed()
+        elif self.oi.releaseCruiseControlButton():
+            self.cruising = False
     def main(self):
         if self.braking:
             self.brake.set(TalonSRXControlMode.PercentOutput, self.oi.getBrake())
@@ -61,5 +69,8 @@ class Chassis:
         else:
             self.disengageBrake()
 
+        self.cruiseMain()
         ySpeed = self.oi.y()
+        if self.cruising:
+            ySpeed = self.cruise_speed
         self.set_speed(ySpeed)

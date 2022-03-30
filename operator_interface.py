@@ -15,3 +15,8 @@ class operator_interface:
     def y(self):
         return self.pilot.getLeftY()
     
+    def setCruiseControlButton(self):
+        return self.pilot.getRightBumper()
+
+    def releaseCruiseControlButton(self):
+        return self.pilot.getLeftBumper()
