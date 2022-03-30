@@ -1,5 +1,7 @@
 from ctre import *
+
 import Wiring
+from brake import Brake
 
 class Chassis:
     MAX_SAFE_OUTPUT = 0.25 # ~ 10 mph
@@ -14,6 +16,7 @@ class Chassis:
                 motor.set(control_mode, speed)
 
     def configMotor(self,motor):
+        # TODO: May want to add a ramprate
         motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor)
 
     def configDrivetrain(self):
@@ -32,7 +35,7 @@ class Chassis:
         self.falcon5.set(control_mode, speed)
         self.falcon6.set(control_mode, speed)
 
-    def get_speed(self):
+    def get_speed_mph(self):
         return ((self.falcon1.getSelectedSensorVelocity() * 10 / 2048 * 60) * 8 / 1056) + \
             ((self.falcon2.getSelectedSensorVelocity() * 10 / 2048 * 60) * 8 / 1056) + \
             ((self.falcon3.getSelectedSensorVelocity() * 10 / 2048 * 60) * 8 / 1056) + \
@@ -57,30 +60,34 @@ class Chassis:
         self.safe_mode = True
         self.parking = True
 
-        self.brake = Brake(Wiring.BRAKE, engaged=self.parking)
+        self.brake = Brake(self.oi, Wiring.BRAKE, engaged=self.parking)
 
         self.configDrivetrain()
-        
-        self.cruise_speed = 0
 
     def drive(self, ySpeed, rSpeed):
         self.left.set_speed(ySpeed - rSpeed)
         self.right.set_speed(ySpeed + rSpeed)
 
+    def enterCruise(self):
+        self.cruising = True
+
+    def exitCruise(self):
+        self.cruising = False
+
     def cruiseMain(self):
-        if self.oi.setCruiseControlButton():
-            self.cruising = True
-            self.cruise_speed = self.get_speed()
+        # Cruise control will need to be updated if MotorSafety still exists in python
+        if self.oi.setCruiseControlButtonPressed():
+            self.enterCruise()
         elif self.oi.exitCruiseControlButton():
-            self.cruising = False
+            self.exitCruise()
     
     def main(self):
         # Parking
         if self.oi.parkingTogglePressed():
             self.parking = not self.parking
         if self.parking:
-            self.brake.engage()
             self.set_speed(0)
+            self.brake.engage()
             return
 
         # Braking
@@ -89,13 +96,16 @@ class Chassis:
         # Safety toggle
         if self.oi.safetyTogglePressed():
             self.safe_mode = not self.safe_mode
+            if self.safety_mode and self.cruising and self.get_speed_mph > Chassis.MAX_SAFE_OUTPUT * Chassis.MAX_SPEED:
+                self.exitCruise()
 
         # Driving
         self.cruiseMain()
         ySpeed = self.oi.y()
         rSpeed = self.oi.x()
         if self.cruising:
-            ySpeed = self.cruise_speed
+            # If MotorSafety complains, I will need to command Motors to the velocity they were at when cruise speed was set
+            return
         if self.safe_mode and ySpeed > Chassis.MAX_SAFE_OUTPUT:
             ySpeed = Chassis.MAX_SAFE_OUTPUT
         if not self.braking:
