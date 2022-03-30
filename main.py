@@ -48,7 +48,7 @@ class Robot:
         speed_str = str(int(self.chassis.get_speed_mph())) + " MPH"
         (w, h), _ = cv2.getTextSize(speed_str, Robot.font, HEADING_SIZE, HEADING_SIZE)
         color = (255, 255, 255)
-        if self.chasiss.parking:
+        if self.chassis.parking:
             color = (0, 0, 255)
         elif self.chassis.cruising:
             color = (0, 128, 255)

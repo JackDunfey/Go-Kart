@@ -86,6 +86,7 @@ class Chassis:
         if self.oi.parkingTogglePressed():
             self.parking = not self.parking
         if self.parking:
+            self.cruising = False
             self.set_speed(0)
             self.brake.engage()
             return
