@@ -60,6 +60,7 @@ class Robot:
 if __name__ == "__main__":
     try:
         robot = Robot()
-        robot.main()
+        while True:
+            robot.main()
     except KeyboardInterrupt:
         exit(0)
