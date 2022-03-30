@@ -36,7 +36,7 @@ class Operator_Interface:
         return self.pilot.getRightBumper()
 
     def setCruiseControlButtonPressed(self):
-        return eslf.pilot.getRightBumperPressed()
+        return self.pilot.getRightBumperPressed()
 
     def exitCruiseControlButton(self):
         return self.pilot.getLeftBumper()

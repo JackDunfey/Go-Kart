@@ -1,5 +1,7 @@
 from ctre import *
+
 import Wiring
+from brake import Brake
 
 class Chassis:
     MAX_SAFE_OUTPUT = 0.25 # ~ 10 mph
