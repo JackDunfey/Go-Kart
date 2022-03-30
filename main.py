@@ -1,9 +1,11 @@
 from ctre import *
 import cv2
 import numpy as np
+from wpilib import PowerDistribution
 
 from operator_interface import Operator_Interface
 from chassis import Chassis
+import Wiring
 
 TEXT_PADDING = 5
 
@@ -19,10 +21,16 @@ class Robot:
     def __init__(self):
         self.oi = Operator_Interface()
         self.chassis = Chassis(self.oi)
+        self.PDM = PowerDistribution(Wiring.PDP, PowerDistribution.ModuleType.kRev)
 
     def main(self):
         while True:
             updateDisplay(speed=int(self.chassis.get_speed() + 0.5))
+            self.chassis.main()
+            if self.oi.hornButton():
+                self.PDM.setSwitchableChannel(True)
+            else:
+                self.PDM.setSwitchableChannel(False)
 
 if __name__ == "__main__":
     try:

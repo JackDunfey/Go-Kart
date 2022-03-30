@@ -20,3 +20,9 @@ class Operator_Interface:
 
     def releaseCruiseControlButton(self):
         return self.pilot.getLeftBumper()
+
+    def hornButton(self):
+        return self.pilot.getRightStickButton()
+    
+    def hornButtonPressed(self):
+        return self.pilot.getRightStickButtonPressed()
