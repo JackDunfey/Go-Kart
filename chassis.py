@@ -60,6 +60,8 @@ class Chassis:
         self.brake = Brake(Wiring.BRAKE, engaged=self.parking)
 
         self.configDrivetrain()
+        
+        self.cruise_speed = 0
 
     def drive(self, ySpeed, rSpeed):
         self.left.set_speed(ySpeed - rSpeed)
@@ -69,7 +71,7 @@ class Chassis:
         if self.oi.setCruiseControlButton():
             self.cruising = True
             self.cruise_speed = self.get_speed()
-        elif self.oi.releaseCruiseControlButton():
+        elif self.oi.exitCruiseControlButton():
             self.cruising = False
     
     def main(self):

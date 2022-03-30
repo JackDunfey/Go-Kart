@@ -28,9 +28,8 @@ class Robot:
                 self.PDM.setSwitchableChannel(False)
 
     def updateDisplay(self):
-        speed = str(int(self.chassis.get_speed() + 0.5)) + " MPH"
         frame = np.zeros(shape=(1920, 1080, 3))
-        texts = [speed, f"Parking Brake: {self.chassis.parking}"]
+        texts = [spstr(int(self.chassis.get_speed() + 0.5)) + " MPH"eed, f"Parking Brake: {self.chassis.parking}", f"Cruising @ {self.cruise_speed} MPH" if self.cruising else "Not cruising"]
         prev_y = 0
         for text in texts:
             w, h = cv2.getTextSize(text, cv2.FONT_HERSHEY_COMPLEX, 1, 1)
