@@ -3,7 +3,8 @@ from wpilib import Relay
 # Untested code!!
 # Assumes active-high
 class Headlights:
-    def __init__(self, relay_id, startOn=False):
+    def __init__(self, operator_interface, relay_id, startOn=False):
+        self.oi = operator_interface
         self.relay = Relay(relay_id)
         if startOn:
             self.on()
@@ -20,5 +21,5 @@ class Headlights:
             self.on()
 
     def main(self):
-        if self.headlightsButtonPresed():
+        if self.oi.headlightsButtonPresed():
             self.toggle()

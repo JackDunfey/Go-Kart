@@ -1,3 +1,4 @@
+from ctre import *
 class Brake:
     def __init__(self, operator_interface, actuator_id, engaged=True):
         self.oi = operator_interface
@@ -5,7 +6,7 @@ class Brake:
         self.brake = TalonSRX(actuator_id)
         self.brake.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0)
         self.engaged = engaged
-    def engage(selfs):
+    def engage(self):
         self.engaged = True
     def disengage(self):
         self.engaged = False

@@ -60,7 +60,7 @@ class Chassis:
         self.safe_mode = True
         self.parking = True
 
-        self.brake = Brake(Wiring.BRAKE, engaged=self.parking)
+        self.brake = Brake(self.oi, Wiring.BRAKE, engaged=self.parking)
 
         self.configDrivetrain()
 
