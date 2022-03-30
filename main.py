@@ -1,7 +1,6 @@
 from ctre import *
 import cv2
 import numpy as np
-from wpilib import Solenoid
 
 from operator_interface import Operator_Interface
 from chassis import Chassis
