@@ -1,5 +1,8 @@
 from ctre import *
+from wpilib import Ultrasonic
+
 import Wiring
+
 
 class Chassis:
     MAX_SAFE_OUTPUT = 0.25 # ~ 10 mph
@@ -59,6 +62,9 @@ class Chassis:
 
         self.brake = TalonSRX(Wiring.BRAKE)
         self.brake.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0)
+        
+        self.ultrasonic = Ultrasonic(Wiring.ULTRASONIC_1, Wiring.ULTRASONIC_2)
+        self.ultrasonic.setAutomaticMode(True)
 
         self.configDrivetrain()
 
@@ -106,6 +112,9 @@ class Chassis:
         if self.safe_mode and ySpeed > Chassis.MAX_SAFE_OUTPUT:
             ySpeed = Chassis.MAX_SAFE_OUTPUT
         if not self.braking:
-            self.drive(ySpeed, rSpeed)
+            if self.ultrasonic.getRange() < 36 and self.get_speed() > Chassis.MAX_SAFE_OUTPUT: # Idk what default is or what the ultrasonic units are (I think inches)
+                self.parking = True
+            else:
+                self.drive(ySpeed, rSpeed)
         else:
             self.drive(0,0)
