@@ -5,11 +5,15 @@ import numpy as np
 from operator_interface import Operator_Interface
 from chassis import Chassis
 
+TEXT_PADDING = 5
+
 def updateDisplay(speed=0):
     text = str(speed) + " MPH"
     frame = np.zeros(shape=(1920, 1080, 3))
-    cv2.putText(frame, text, (420, 800), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, 2)
+    text_w, text_h = cv2.getTextSize(text, cv2.FONT_HERSHEY_COMPLEX, 1, 1)
+    cv2.putText(frame, text, (0,2*(text_h+TEXT_PADDING)), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 1, cv2.LINE_AA)
     cv2.imshow("Speedometer", frame)
+    cv2.waitKey(1)
 
 class Robot:
     def __init__(self):
