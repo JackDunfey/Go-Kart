@@ -2,6 +2,17 @@ from ctre import *
 import Wiring
 
 class Chassis:
+    MAX_SAFE_OUTPUT = 0.25 # ~ 10 mph
+
+    class MotorSet:
+        def __init__(self, *motor_list):
+            self.motors = []
+            for motor in motor_list:
+                self.motors += [motor]
+        def set_speed(self, speed, control_mode=TalonFXControlMode.PercentOutput):
+            for motor in self.motors:
+                motor.set(control_mode, speed)
+
     def configMotor(self,motor):
         motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor)
 
@@ -38,19 +49,22 @@ class Chassis:
         self.falcon4 = TalonFX(Wiring.TALON4)
         self.falcon5 = TalonFX(Wiring.TALON5)
         self.falcon6 = TalonFX(Wiring.TALON6)
+        
+        self.left = Chassis.MotorSet(self.falcon1, self.falcon2, self.falcon3)
+        self.right = Chassis.MotorSet(self.falcon4, self.falcon5, self.falcon6)
 
         self.cruising = False
+        self.safe_mode = True
+        self.parking = True
 
         self.brake = TalonSRX(Wiring.BRAKE)
         self.brake.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0)
 
         self.configDrivetrain()
 
-    def engageBrake(self):
-        self.braking = True
-
-    def disengageBrake(self):
-        self.braking = False
+    def drive(self, ySpeed, rSpeed):
+        self.left.set_speed(ySpeed - rSpeed)
+        self.right.set_speed(ySpeed + rSpeed)
 
     def cruiseMain(self):
         if self.oi.setCruiseControlButton():
@@ -58,19 +72,40 @@ class Chassis:
             self.cruise_speed = self.get_speed()
         elif self.oi.releaseCruiseControlButton():
             self.cruising = False
+    
     def main(self):
+        # Parking
+        if self.oi.parkingTogglePressed():
+            self.parking = not self.parking
+        if self.parking:
+            self.braking = True
+            self.brake.set(TalonFXControlMode.PercentOutput, 1)
+            self.set_speed(0)
+            return
+
+        # Braking
+        if self.oi.isBraking():
+            self.braking = True
+        else:
+            self.braking = False
         if self.braking:
             self.brake.set(TalonSRXControlMode.PercentOutput, self.oi.getBrake())
         else:
             self.brake.set(TalonSRXControlMode.PercentOutput, 0)
+        
+        # Safety toggle
+        if self.oi.safetyTogglePressed():
+            self.safe_mode = not self.safe_mode
 
-        if self.oi.isBraking():
-            self.engageBrake()
-        else:
-            self.disengageBrake()
-
+        # Driving
         self.cruiseMain()
         ySpeed = self.oi.y()
+        rSpeed = self.oi.x()
         if self.cruising:
             ySpeed = self.cruise_speed
-        self.set_speed(ySpeed)
+        if self.safe_mode and ySpeed > Chassis.MAX_SAFE_OUTPUT:
+            ySpeed = Chassis.MAX_SAFE_OUTPUT
+        if not self.braking:
+            self.drive(ySpeed, rSpeed)
+        else:
+            self.drive(0,0)

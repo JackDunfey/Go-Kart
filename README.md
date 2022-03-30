@@ -1,2 +1,9 @@
-# EDD-Go-Cart
-a go cart made in edd
+# My Go-Kart
+
+## Features
+
+* Safety mode
+* Horn
+* Cruise control
+* Parking brake
+* Dashboard with speedometer
