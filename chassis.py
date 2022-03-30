@@ -57,8 +57,7 @@ class Chassis:
         self.safe_mode = True
         self.parking = True
 
-        self.brake = TalonSRX(Wiring.BRAKE)
-        self.brake.configSelectedFeedbackSensor(FeedbackDevice.Analog, 0)
+        self.brake = Brake(Wiring.BRAKE, engaged=self.parking)
 
         self.configDrivetrain()
 
@@ -78,20 +77,12 @@ class Chassis:
         if self.oi.parkingTogglePressed():
             self.parking = not self.parking
         if self.parking:
-            self.braking = True
-            self.brake.set(TalonFXControlMode.PercentOutput, 1)
+            self.brake.engage()
             self.set_speed(0)
             return
 
         # Braking
-        if self.oi.isBraking():
-            self.braking = True
-        else:
-            self.braking = False
-        if self.braking:
-            self.brake.set(TalonSRXControlMode.PercentOutput, self.oi.getBrake())
-        else:
-            self.brake.set(TalonSRXControlMode.PercentOutput, 0)
+        self.brake.main(self.oi)
         
         # Safety toggle
         if self.oi.safetyTogglePressed():
