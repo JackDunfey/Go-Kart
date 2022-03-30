@@ -15,12 +15,11 @@ def updateDisplay(speed=0):
 class Robot:
     def __init__(self):
         self.oi = Operator_Interface()
-        self.chassis = Chassis()
+        self.chassis = Chassis(self.oi)
 
     def main(self):
         while True:
-            updateDisplay(speed=int(self.get_speed() + 0.5))
-            self.chassis.main()
+            updateDisplay(speed=int(self.chassis.get_speed() + 0.5))
 
 if __name__ == "__main__":
     try:
