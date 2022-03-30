@@ -35,7 +35,7 @@ class Robot:
         frame = np.zeros(shape=(WIDTH, HEIGHT, 3))
 
         # Display text
-        texts = [f"Parking Brake: {self.chassis.parking}", f"Cruising @ {self.cruise_speed} MPH" if self.cruising else "Not cruising"]
+        texts = [f"Parking Brake: {self.chassis.parking}", f"Cruising @ {self.chassis.get_speed_mph()} MPH" if self.cruising else "Not cruising"]
         y = 0
         for text in texts:
             w, h = cv2.getTextSize(text, Robot.font, 1, 1)
