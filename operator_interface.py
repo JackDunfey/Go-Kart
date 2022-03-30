@@ -2,7 +2,7 @@ from wpilib import XboxController
 
 import Wiring
 
-class operator_interface:
+class Operator_Interface:
     def __init__(self):
         self.pilot = XboxController(Wiring.PILOT_PORT)
     

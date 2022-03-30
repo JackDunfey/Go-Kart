@@ -3,8 +3,8 @@ import cv2
 import numpy as np
 from wpilib import Solenoid
 
-import operator_interface
-import Chassis
+from operator_interface import Operator_Interface
+from chassis import Chassis
 
 def updateDisplay(speed=0):
     text = str(speed) + " MPH"
@@ -14,8 +14,7 @@ def updateDisplay(speed=0):
 
 class Robot:
     def __init__(self):
-        self.configDrivetrain()
-        self.oi = operator_interface()
+        self.oi = Operator_Interface()
         self.chassis = Chassis()
 
     def main(self):
