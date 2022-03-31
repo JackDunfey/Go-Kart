@@ -36,6 +36,7 @@ class Chassis:
         self.falcon6.set(control_mode, speed)
 
     def get_speed_mph(self):
+        # Adjust calculations
         return ((self.falcon1.getSelectedSensorVelocity() * 10 / 2048 * 60) * 8 / 1056) + \
             ((self.falcon2.getSelectedSensorVelocity() * 10 / 2048 * 60) * 8 / 1056) + \
             ((self.falcon3.getSelectedSensorVelocity() * 10 / 2048 * 60) * 8 / 1056) + \
@@ -43,7 +44,7 @@ class Chassis:
             ((self.falcon5.getSelectedSensorVelocity() * 10 / 2048 * 60) * 8 / 1056) + \
             ((self.falcon6.getSelectedSensorVelocity() * 10 / 2048 * 60) * 8 / 1056) / 6
 
-    def __init__(self, operator_interface):
+    def __init__(self, operator_interface, cruising=False, safe_mode=True, parking=True):
         self.oi = operator_interface
 
         self.falcon1 = TalonFX(Wiring.TALON1)
@@ -56,9 +57,9 @@ class Chassis:
         self.left = Chassis.MotorSet(self.falcon1, self.falcon2, self.falcon3)
         self.right = Chassis.MotorSet(self.falcon4, self.falcon5, self.falcon6)
 
-        self.cruising = False
-        self.safe_mode = True
-        self.parking = True
+        self.cruising = cruising
+        self.safe_mode = safe_mode
+        self.parking = parking
 
         self.brake = Brake(self.oi, Wiring.BRAKE, engaged=self.parking)
 
@@ -86,12 +87,15 @@ class Chassis:
         if self.oi.parkingTogglePressed():
             self.parking = not self.parking
         if self.parking:
+            self.cruising = False
             self.set_speed(0)
             self.brake.engage()
             return
 
         # Braking
-        self.brake.main(self.oi)
+        self.brake.main()
+        if self.brake.engaged:
+            self.exitCruise()
         
         # Safety toggle
         if self.oi.safetyTogglePressed():
@@ -108,7 +112,7 @@ class Chassis:
             return
         if self.safe_mode and ySpeed > Chassis.MAX_SAFE_OUTPUT:
             ySpeed = Chassis.MAX_SAFE_OUTPUT
-        if not self.braking:
+        if not self.brake.engaged:
             self.drive(ySpeed, rSpeed)
         else:
             self.drive(0,0)
