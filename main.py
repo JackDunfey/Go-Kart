@@ -61,6 +61,7 @@ class Robot:
             color = (255, 0, 0)
         elif self.chassis.cruising:
             color = (0, 128, 255)
+        cv2.putText(frame, speed_str, ((Robot.WIDTH-w)//2, (Robot.HEIGHT+h)//2), Robot.font, HEADING_SIZE, (0,0,0), HEADING_SIZE*2+1, cv2.LINE_AA)
         cv2.putText(frame, speed_str, ((Robot.WIDTH-w)//2, (Robot.HEIGHT+h)//2), Robot.font, HEADING_SIZE, color, HEADING_SIZE*2, cv2.LINE_AA)
 
         # Safe mode indicator
