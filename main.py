@@ -1,8 +1,8 @@
-from turtle import speed
 from ctre import *
 import cv2
 import numpy as np
 from wpilib import PowerDistribution
+from camera import Camera
 
 from operator_interface import Operator_Interface
 from chassis import Chassis
@@ -16,12 +16,14 @@ class Robot:
     
     def __init__(self):
         self.oi = Operator_Interface()
-        self.chassis = Chassis(self.oi)
+        self.chassis = Chassis(self.oi, cruising=True, parking=False)
         self.PDM = PowerDistribution(Wiring.PDM, PowerDistribution.ModuleType.kRev)
         self.headlights = Headlights(self.oi, Wiring.HEADLIGHT_RELAY)
+        self.camera = Camera(0)
 
     def main(self):
         # Dashboard
+        self.camera.update()
         self.updateDisplay()
         # Driving
         self.chassis.main()
@@ -34,6 +36,11 @@ class Robot:
 
     def updateDisplay(self):
         frame = np.zeros(shape=(Robot.HEIGHT, Robot.WIDTH, 3))
+        try:
+            frame = cv2.resize(self.camera.frame, (Robot.WIDTH, Robot.HEIGHT))
+            pass
+        except:
+            pass
 
         # Display text
         texts = []
@@ -50,17 +57,21 @@ class Robot:
         color = (255, 255, 255)
         if self.chassis.parking:
             color = (0, 0, 255)
+        elif self.chassis.brake.engaged:
+            color = (255, 0, 0)
         elif self.chassis.cruising:
             color = (0, 128, 255)
-        cv2.putText(frame, speed_str, ((Robot.WIDTH-w)//2, (Robot.HEIGHT+h)//2), Robot.font, HEADING_SIZE, color, HEADING_SIZE, cv2.LINE_AA)
+        cv2.putText(frame, speed_str, ((Robot.WIDTH-w)//2, (Robot.HEIGHT+h)//2), Robot.font, HEADING_SIZE, color, HEADING_SIZE*2, cv2.LINE_AA)
 
         # Safe mode indicator
-        r = 100
-        cv2.rectangle(frame, (Robot.WIDTH - r, 0), (Robot.WIDTH, r), (0, 255, 0) if not self.chassis.safe_mode else (0, 255, 255), -1)
+        if self.chassis.safe_mode:
+            r = 100
+            cv2.rectangle(frame, (0, 0), (Robot.WIDTH, r), (0, 255, 255), -1)
+            cv2.rectangle(frame, (0, Robot.HEIGHT-r), (Robot.WIDTH, Robot.HEIGHT),(0, 255, 255), -1)
 
         # Display output
-        cv2.imshow("Speedometer", frame)
-        cv2.waitKey(0)
+        cv2.imshow("Dashboard", frame)
+        cv2.waitKey(1)
 
 if __name__ == "__main__":
     robot = Robot()

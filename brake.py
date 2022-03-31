@@ -15,7 +15,9 @@ class Brake:
             self.engage()
         else:
             self.disengage()
-        if self.brake.engaged:
+
+        # Add a ramp rate so motor isn't destoryed
+        if self.engaged:
             self.brake.set(TalonSRXControlMode.PercentOutput, self.oi.getBrake())
         else:
             self.brake.set(TalonSRXControlMode.PercentOutput, 0)

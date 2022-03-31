@@ -1,6 +1,8 @@
 from wpilib import XboxController
 
 import Wiring
+import keylib
+import keyboard
 
 class Operator_Interface:
     """
@@ -21,9 +23,11 @@ class Operator_Interface:
         self.pilot = XboxController(Wiring.PILOT_PORT)
     
     def getBrake(self):
+        return 1 if keyboard.is_pressed(keylib.B) else 0
         return self.pilot.getLeftTriggerAxis()
     
     def isBraking(self):
+        return True if keyboard.is_pressed(keylib.B) else 0
         return self.getBrake() > 0.1
     
     def y(self):
@@ -42,7 +46,7 @@ class Operator_Interface:
         return self.pilot.getLeftBumper()
 
     def hornButton(self):
-        return self.pilot.getAButton()
+        return self.pilot.getAButton() or keyboard.is_pressed(keylib.H)
     
     def hornButtonPressed(self):
         return self.pilot.getAButton()

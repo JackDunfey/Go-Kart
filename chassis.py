@@ -92,7 +92,9 @@ class Chassis:
             return
 
         # Braking
-        self.brake.main(self.oi)
+        self.brake.main()
+        if self.brake.engaged:
+            self.exitCruise()
         
         # Safety toggle
         if self.oi.safetyTogglePressed():
@@ -109,7 +111,7 @@ class Chassis:
             return
         if self.safe_mode and ySpeed > Chassis.MAX_SAFE_OUTPUT:
             ySpeed = Chassis.MAX_SAFE_OUTPUT
-        if not self.braking:
+        if not self.brake.engaged:
             self.drive(ySpeed, rSpeed)
         else:
             self.drive(0,0)
