@@ -23,11 +23,9 @@ class Operator_Interface:
         self.pilot = XboxController(Wiring.PILOT_PORT)
     
     def getBrake(self):
-        return 1 if keyboard.is_pressed(keylib.B) else 0
         return self.pilot.getLeftTriggerAxis()
     
     def isBraking(self):
-        return keyboard.is_pressed(keylib.B)
         return self.getBrake() > 0.1
     
     def y(self):
